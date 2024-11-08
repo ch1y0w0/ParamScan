@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ParamScan",
+  "version": "1.0",
+  "description": "Passively check for every reflecting parameter in the visiting page.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

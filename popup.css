@@ -1,0 +1,152 @@
+body {
+  font-family: "Arial", sans-serif;
+  background: #111;
+  color: white;
+  font-size: 60px;
+  text-shadow: 0 0 15px #411;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+html {
+  height: 550px;
+  width: 400px;
+  border: 1px solid #07d100;
+  border-radius: 8px;
+}
+
+#title {
+  margin: 0.2rem 0 0 0;
+  font-weight: bold;
+  font-size: 2rem;
+  color: lime;
+  text-align: center; /* Center text for titles */
+  flex: 0 1 auto; /* Allow titles to take up space */
+  position: center; /* Positioning titles absolutely */
+}
+
+.container {
+  padding: 1rem;
+}
+
+.list-title {
+    color: lime; /* Text color */
+    margin: 0px 0px 0px 0px; /* Remove default margin */
+    font-size: 20px; /* Adjust font size as needed */
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin-top: 0.5rem;
+  height: 460px;
+  overflow-y: auto;
+  border: 1px solid #07d100;
+  border-radius: 8px;
+  background-color: #1f1f1f;
+  box-sizing: border-box;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem 1rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  background-color: #1f1f1f;
+  border: 1px solid #07d100;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.list li:hover {
+  background-color: #646464;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.empty {
+  text-align: center;
+  color: green;
+  padding: 1rem;
+}
+
+footer {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.list-container {
+  margin-bottom: 1rem;
+}
+
+.parent-container {
+    display: flex; /* Use Flexbox for layout */
+    justify-content: space-between; /* Space between the items */
+    align-items: center; /* Center items vertically */
+    width: 100%; /* Make it full width */
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+#list-item {
+  display: flex;
+  flex-direction: column;
+}
+
+#list-item h4 {
+  margin: 0; /* Optional: to remove default margin */
+  color: red;
+}
+
+#list-item p {
+  margin: 0; /* Optional: to remove default margin */
+}
+
+#check-button {
+  background-color: #1a1a1a; /* dark background */
+  color: #00e600; /* green text */
+  border: 2px solid #00e600; /* green border */
+  border-radius: 10px; /* rounded corners */
+  padding: 6px 12px; /* add some padding */
+  font-size: 14px; /* text size */
+  font-weight: bold; /* bold text */
+  text-align: center;
+  cursor: pointer; /* pointer on hover */
+  transition: all 0.3s ease; /* smooth transition for hover */
+  outline: none; /* remove outline */
+  min-width: 150px; /* fixed minimum width */
+  max-width: 200px; /* optional max width */
+  white-space: nowrap; /* prevent text from wrapping */
+  overflow: hidden; /* prevent overflow */
+  text-overflow: ellipsis; /* add ellipsis if text overflows */
+}
+
+#check-button:hover {
+  background-color: #00e600; /* green background on hover */
+  color: #1a1a1a; /* black text on hover */
+  border-color: #1a1a1a; /* black border on hover */
+}
+
+#check-button:active {
+  transform: scale(0.98); /* slight scale down on click */
+}
+
+@media (max-width: 30px) {
+  #check-button {
+    width: 100%; /* make the button full width on smaller screens */
+    padding: 12px 0; /* adjust padding for better mobile look */
+  }
+}
