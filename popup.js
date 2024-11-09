@@ -13,6 +13,7 @@ async function displayParams(state) {
         // Retrieve the parameters from local storage
         const result = await browserAPI.storage.local.get(key);
         const params = result[key]; // Assuming params is an array or object
+        console.log(params);
 
         const list = document.getElementById('matches-list');
 

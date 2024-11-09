@@ -58,5 +58,6 @@ Feedbacks are also welcome. You can contact me via X!
  - [ ] Find Dynamically Generated(JS) Reflections
  - [ ] Add Passive Logging
  - [ ] Add Scroll and State Save
+ - [ ] Post request
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*

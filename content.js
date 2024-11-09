@@ -141,7 +141,6 @@ async function findParameters() {
 
     // Get the hostname of the current tab directly from the location
     const key = `${window.location.hostname}_all`;
-    console.log(key);
 
     // Save the data to chrome.storage with the hostname as the key
     await chrome.storage.local.set({ [key]: params });
