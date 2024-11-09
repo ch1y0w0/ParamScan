@@ -216,7 +216,11 @@ window.addEventListener('load', findParameters);
 
 // Clear the local storage whenever the webpage gets closed
 window.addEventListener('beforeunload', async function () {
+
+    const refsKey = `${window.location.hostname}_refs`;
+    const allKey = `${window.location.hostname}_all`;
     // Clear local storage
-    await browserAPI.storage.local.clear();
+    await browserAPI.storage.local.remove(refsKey);
+    await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');
 });
