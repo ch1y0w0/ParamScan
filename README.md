@@ -6,7 +6,7 @@
 ## Installation
 
 1.  Download the latest release or clone this repo to your local machine:  
-    `git clone https://github.com/yourusername/ParamScan.git`
+    `git clone https://github.com/ch1y0w0/ParamScan.git`
     
 2.  Go to Chrome’s Extensions page (`chrome://extensions/`).
     
