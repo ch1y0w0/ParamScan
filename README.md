@@ -2,6 +2,11 @@
 # ParamScan
 
 **ParamScan** is a simple Chrome extension for web security enthusiasts and pen testers. It helps you find URL parameters in a webpage's source code and check if any of them are reflected on the page. This is super useful for spotting potential XSS vulnerabilities and other security issues.
+![image](https://github.com/user-attachments/assets/bdb4260c-1c3e-48fd-8ecc-d4204c36c111)
+
+![image](https://github.com/user-attachments/assets/43a95b35-299f-4227-8191-d2e423888843)
+
+
 
 ## Installation
 
