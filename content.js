@@ -157,51 +157,74 @@ function generateRandomString(length) {
     return result;
 }
 
-// Function to send requests with parameters
 async function sendRequests(parameters, baseUrl) {
     const chunkSize = 30;
     const reflections = [];
 
-    // Split parameters into chunks
     for (let i = 0; i < parameters.length; i += chunkSize) {
         const chunk = parameters.slice(i, i + chunkSize);
-
-        // Create a dictionary to store the random values that are generated for each parameter
         const paramValues = chunk.map(param => {
-            const randomValue = generateRandomString(5);  // Generate the random value for each parameter
-            return { param, randomValue };  // Return both the parameter and its random value
+            const randomValue = generateRandomString(5);
+            return { param, randomValue };
         });
 
-        // Construct the query string using the generated random values
         const queryString = paramValues.map(({ param, randomValue }) => `${encodeURIComponent(param)}=${encodeURIComponent(randomValue)}`).join('&');
         const url = `${baseUrl}?${queryString}`;
         console.log(url);
+
         try {
+            // Simulate page request and load
             const response = await fetch(url);
             const text = await response.text();
 
-            // Check for reflections using the same random values that were sent in the request
+            // Check static response for reflections (same as before)
             paramValues.forEach(({ param, randomValue }) => {
                 if (text.includes(randomValue)) {
-                    //console.log(`Parameter ${param} with value ${randomValue} is reflected in the response.`);
                     reflections.push(param);
                 }
             });
+
+            // Check for dynamic JS-generated reflections:
+            // Inject JavaScript execution (if reflection occurs after JS runs)
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';  // Hide the iframe from the user
+            document.body.appendChild(iframe);
+            const iframeWindow = iframe.contentWindow;
+
+            // Inject the URL into the iframe and simulate loading the page
+            iframeWindow.location.href = url;
+
+            // Wait for the JavaScript to execute
+            await new Promise((resolve) => setTimeout(resolve, 2000));  // Wait for JS execution (adjust the timeout as needed)
+
+            // Check if reflections are present in the iframe's DOM
+            const iframeDoc = iframeWindow.document;
+            paramValues.forEach(({ param, randomValue }) => {
+                const outputElement = iframeDoc.getElementById('output');
+                if (outputElement && outputElement.textContent.includes(randomValue)) {
+                    reflections.push(param);
+                }
+            });
+
+            // Remove iframe after checking
+            document.body.removeChild(iframe);
 
         } catch (error) {
             console.error(`Error fetching URL: ${url}`, error);
         }
     }
-    console.log(reflections);
+
     const key = `${window.location.hostname}_refs`;
     browserAPI.storage.local.set({ [key]: reflections });
     console.log('Saved Reflections');
+
     // Connect to the popup
     const port = chrome.runtime.connect({ name: "content-to-popup" });
 
     // Send a message to the popup
     port.postMessage({ state: "checked" });
 }
+
 
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sendMessageToContent') {

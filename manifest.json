@@ -17,5 +17,8 @@
       "js": ["content.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "icons": {
+    "128": "logo.png"
+  }
 }
