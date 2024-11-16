@@ -58,7 +58,7 @@ Feedbacks are also welcome. You can contact me via X!
  - [ ] Find Dynamically Generated(JS) Reflections
  - [ ] Analye JS Files and Find Parameters in JS codes
  - [ ] Add Passive Logging
- - [ ] Add Scroll and State Save
+ - [X] Add Scroll Save
  - [ ] Post Request
  - [ ] Handle Errors
  

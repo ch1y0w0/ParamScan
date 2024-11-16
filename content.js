@@ -143,7 +143,7 @@ async function findParameters() {
     const key = `${window.location.hostname}_all`;
 
     // Save the data to chrome.storage with the hostname as the key
-    await chrome.storage.local.set({ [key]: params });
+    await browserAPI.storage.local.set({ [key]: params });
     console.log(`Data saved for ${key}`);
 }
 
@@ -219,7 +219,8 @@ window.addEventListener('beforeunload', async function () {
 
     const refsKey = `${window.location.hostname}_refs`;
     const allKey = `${window.location.hostname}_all`;
-    // Clear local storage
+    const scrollKey = `${window.location.hostname}_scrollPosition`;
+    // Remove Parameters
     await browserAPI.storage.local.remove(refsKey);
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');

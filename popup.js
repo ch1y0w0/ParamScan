@@ -1,5 +1,3 @@
-// popup.js
-
 // Get Browser
 const browserAPI = typeof browser !== "undefined" ? browser : chrome;
 
@@ -44,12 +42,13 @@ async function displayParams(state) {
             listItem.classList.add('empty');
             list.appendChild(listItem);
         }
+
+        scrollSave();
+        restoreScrollPosition();
     } catch (error) {
         console.error('Error retrieving params:', error);
     }
 }
-
-
 
 async function doesRefsExists() {
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
@@ -67,6 +66,34 @@ async function doesRefsExists() {
     return params ? true : false;
 }
 
+async function restoreScrollPosition() {
+  const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+  const url = new URL(tabs[0].url); // Get the current tab's URL
+  const key = `${url.hostname}`;
+  const scrollKey = `${key}_scrollPosition`;
+
+  const list = document.getElementById('matches-list');
+
+  setTimeout(() => {
+    const savedScrollPosition = localStorage.getItem(scrollKey);
+
+    if (savedScrollPosition) list.scrollTop = savedScrollPosition;
+  }, 0);
+}
+
+async function scrollSave() {
+    const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+    const url = new URL(tabs[0].url); // Get the current tab's URL
+    const key = `${url.hostname}`;
+    const scrollKey = `${key}_scrollPosition`;
+
+    const list = document.getElementById('matches-list');
+
+    list.addEventListener("scroll", () => {
+        const scrollPosition = list.scrollTop;
+        localStorage.setItem(scrollKey, scrollPosition);
+  });
+}
 
 document.getElementById('check-button').addEventListener('click', async function () {
     const button = document.getElementById('check-button');
@@ -74,21 +101,21 @@ document.getElementById('check-button').addEventListener('click', async function
 
     if (button.innerHTML === 'Check Reflections') {
 
-    	const exists = await doesRefsExists()
-    	console.log(exists);
-    	if(exists){
-    		button.innerHTML = 'All Parameters';
-    		title.innerHTML = 'Reflections';
-    		await displayParams('refs');
-    	} else{
-	        // Query the active tab
-	        const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-	        // Send a message to the content script on the active tab
-	        await browserAPI.tabs.sendMessage(tabs[0].id, { type: 'sendMessageToContent', message: 'check' });
-	        
-	        button.innerHTML = 'Checking';
-	        title.innerHTML = 'Waiting';
-    	}
+        const exists = await doesRefsExists()
+        console.log(exists);
+        if (exists) {
+            button.innerHTML = 'All Parameters';
+            title.innerHTML = 'Reflections';
+            await displayParams('refs');
+        } else {
+            // Query the active tab
+            const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+            // Send a message to the content script on the active tab
+            await browserAPI.tabs.sendMessage(tabs[0].id, { type: 'sendMessageToContent', message: 'check' });
+
+            button.innerHTML = 'Checking';
+            title.innerHTML = 'Waiting';
+        }
     } else {
         button.innerHTML = 'Check Reflections';
         title.innerHTML = 'Parameters';
@@ -96,21 +123,19 @@ document.getElementById('check-button').addEventListener('click', async function
     }
 });
 
-
 // Listen for the connection from the content script
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === "content-to-popup") {
-    port.onMessage.addListener((message) => {
-      if(message.state === 'checked'){
-      	const button = document.getElementById('check-button');
-    	const title = document.getElementById('list-title');
-      	displayParams('refs');
-      	button.innerHTML = 'All Parameters';
-      	title.innerHTML = 'Reflections';
-      }
-    });
-  }
+    if (port.name === "content-to-popup") {
+        port.onMessage.addListener((message) => {
+            if (message.state === 'checked') {
+                const button = document.getElementById('check-button');
+                const title = document.getElementById('list-title');
+                displayParams('refs');
+                button.innerHTML = 'All Parameters';
+                title.innerHTML = 'Reflections';
+            }
+        });
+    }
 });
 
-
-displayParams('all');
+document.addEventListener('DOMContentLoaded', displayParams('all'));
