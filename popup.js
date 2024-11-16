@@ -9,42 +9,44 @@ async function displayParams(state) {
         const key = `${url.hostname}_${state}`;
 
         // Retrieve the parameters from local storage
-        const result = await browserAPI.storage.local.get(key);
-        const params = result[key]; // Assuming params is an array or object
-        console.log(params);
+        setTimeout(async () => {
+            const result = await browserAPI.storage.local.get(key);
+            const params = result[key]; // Assuming params is an array or object
+            console.log(params);
 
-        const list = document.getElementById('matches-list');
+            const list = document.getElementById('matches-list');
 
-        // Clear any existing list items if needed
-        list.innerHTML = '';
+            // Clear any existing list items if needed
+            list.innerHTML = '';
 
-        // Check if params exist using length for array or object
-        if (Array.isArray(params) && params.length > 0) {
-            // If params is an array and has elements
-            params.forEach(param => {
-                const listItem = document.createElement('li');
-                listItem.textContent = param;
-                list.appendChild(listItem);
-            });
-        } else if (typeof params === 'object' && Object.keys(params).length > 0) {
-            // If params is an object and has keys
-            for (const key in params) {
-                if (params.hasOwnProperty(key)) {
+            // Check if params exist using length for array or object
+            if (Array.isArray(params) && params.length > 0) {
+                // If params is an array and has elements
+                params.forEach(param => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `${key}: ${params[key]}`;
+                    listItem.textContent = param;
                     list.appendChild(listItem);
+                });
+            } else if (typeof params === 'object' && Object.keys(params).length > 0) {
+                // If params is an object and has keys
+                for (const key in params) {
+                    if (params.hasOwnProperty(key)) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${key}: ${params[key]}`;
+                        list.appendChild(listItem);
+                    }
                 }
+            } else {
+                // If no params exist, display the "No Parameter Found" message
+                const listItem = document.createElement('li');
+                listItem.textContent = 'No Parameter Found In This Page';
+                listItem.classList.add('empty');
+                list.appendChild(listItem);
             }
-        } else {
-            // If no params exist, display the "No Parameter Found" message
-            const listItem = document.createElement('li');
-            listItem.textContent = 'No Parameter Found In This Page';
-            listItem.classList.add('empty');
-            list.appendChild(listItem);
-        }
 
-        scrollSave();
-        restoreScrollPosition();
+            scrollSave();
+            restoreScrollPosition();
+    }, 0);
     } catch (error) {
         console.error('Error retrieving params:', error);
     }
