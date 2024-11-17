@@ -1,21 +1,29 @@
 // content.js
 
-// Get Browser
+// Get Browser API (Chrome or Firefox)
 const browserAPI = typeof browser !== "undefined" ? browser : chrome;
 
-// Utility function to extract query string keys from a URL
-function queryStringKeys(url) {
+/**
+ * Utility function to extract query string parameter keys from a URL.
+ * @param {string} url - The URL to extract parameters from.
+ * @returns {Array} - An array of query string parameter keys.
+ */
+function extractQueryStringKeys(url) {
     const params = new URL(url).searchParams;
     return Array.from(params.keys());
 }
 
-// Utility function to find variable names from JavaScript
+/**
+ * Utility function to find variable names in JavaScript code.
+ * @param {string} body - The HTML or script body to search.
+ * @returns {Array} - An array of variable names.
+ */
 function findVariableNames(body) {
-    const variableNamesRegex = /(let|const|var)\s+([\w\s,]+)/g;
+    const variableRegex = /(let|const|var)\s+([\w\s,]+)/g;
     const variableNames = [];
     let match;
 
-    while ((match = variableNamesRegex.exec(body)) !== null) {
+    while ((match = variableRegex.exec(body)) !== null) {
         const names = match[2].split(',').map(name => name.trim());
         variableNames.push(...names);
     }
@@ -23,20 +31,28 @@ function findVariableNames(body) {
     return variableNames;
 }
 
-// Utility function to find JSON keys
+/**
+ * Utility function to find keys in a JSON object from JavaScript code.
+ * @param {string} body - The JavaScript code containing JSON data.
+ * @returns {Array} - An array of JSON keys.
+ */
 function findJsonKeys(body) {
-    const jsonObjectKeyRegex = /["']([\w\-]+)["']\s*:/g;
+    const jsonKeyRegex = /["']([\w\-]+)["']\s*:/g;
     const jsonKeys = [];
     let match;
 
-    while ((match = jsonObjectKeyRegex.exec(body)) !== null) {
+    while ((match = jsonKeyRegex.exec(body)) !== null) {
         jsonKeys.push(match[1]);
     }
 
     return jsonKeys;
 }
 
-// Utility function to find string format variables
+/**
+ * Utility function to find variables inside string formatting in JavaScript.
+ * @param {string} body - The JavaScript code to search for string format variables.
+ * @returns {Array} - An array of string format variables.
+ */
 function findStringFormatVariables(body) {
     const stringFormatRegex = /\${(\s*[\w\-]+)\s*}/g;
     const stringFormats = [];
@@ -49,13 +65,17 @@ function findStringFormatVariables(body) {
     return stringFormats;
 }
 
-// Utility function to find function parameters
+/**
+ * Utility function to find function parameters in JavaScript.
+ * @param {string} body - The JavaScript code to search for function parameters.
+ * @returns {Array} - An array of function parameter names.
+ */
 function findFunctionParameters(body) {
-    const funcInputRegex = /\(\s*["']?([\w\-]+)["']?\s*(,\s*["']?([\w\-]+)["']?\s*)*(,\s*["']?([\w\-]+)["']?\s*)*\)/g;
+    const funcParamsRegex = /\(\s*["']?([\w\-]+)["']?\s*(,\s*["']?([\w\-]+)["']?\s*)*(,\s*["']?([\w\-]+)["']?\s*)*\)/g;
     const functionParams = [];
     let match;
 
-    while ((match = funcInputRegex.exec(body)) !== null) {
+    while ((match = funcParamsRegex.exec(body)) !== null) {
         for (let i = 1; i < match.length; i += 2) {
             if (match[i]) {
                 functionParams.push(match[i]);
@@ -66,20 +86,28 @@ function findFunctionParameters(body) {
     return functionParams;
 }
 
-// Utility function to find path parameters
+/**
+ * Utility function to find dynamic path parameters (e.g., /{id}) in a URL.
+ * @param {string} body - The JavaScript code to search for path parameters.
+ * @returns {Array} - An array of path parameter names.
+ */
 function findPathParameters(body) {
-    const pathInputRegex = /\/\{(.*?)\}/g;
+    const pathParamRegex = /\/\{(.*?)\}/g;
     const pathParams = [];
     let match;
 
-    while ((match = pathInputRegex.exec(body)) !== null) {
+    while ((match = pathParamRegex.exec(body)) !== null) {
         pathParams.push(match[1]);
     }
 
     return pathParams;
 }
 
-// Utility function to find query string keys in the body
+/**
+ * Utility function to find query string keys inside the HTML body.
+ * @param {string} body - The body of the page to search for query parameters.
+ * @returns {Array} - An array of query string parameter keys.
+ */
 function findQueryStringKeys(body) {
     const queryStringRegex = /(\?([\w\-]+)=)|(\&([\w\-]+)=)/g;
     const queryKeys = [];
@@ -93,7 +121,12 @@ function findQueryStringKeys(body) {
     return queryKeys;
 }
 
-// Utility function to find HTML name and ID attributes
+/**
+ * Utility function to find specific HTML attributes (name, id) in the body.
+ * @param {string} body - The body of the page to search.
+ * @param {string} attribute - The HTML attribute to search for ('name' or 'id').
+ * @returns {Array} - An array of attribute values.
+ */
 function findHtmlAttributes(body, attribute) {
     const regex = new RegExp(`${attribute}\\s*=\\s*["|']([\\w\\-]+)["|']`, 'g');
     const attributes = [];
@@ -106,18 +139,20 @@ function findHtmlAttributes(body, attribute) {
     return attributes;
 }
 
-// Global array for parameters (useful for checking reflections)
+// Global array for storing parameters
 let params = [];
 
-// Main function to find all parameters
-async function findParameters() {
+/**
+ * Main function to extract parameters from the page (URL and body).
+ * @returns {Promise} - A promise that resolves after parameters are saved to storage.
+ */
+async function extractParameters() {
     const url = window.location.href;
     const body = document.body.innerHTML;
-
     const allParameters = [];
 
-    // Extract parameters
-    allParameters.push(...queryStringKeys(url));
+    // Extract various types of parameters
+    allParameters.push(...extractQueryStringKeys(url));
     allParameters.push(...findVariableNames(body));
     allParameters.push(...findJsonKeys(body));
     allParameters.push(...findStringFormatVariables(body));
@@ -125,9 +160,8 @@ async function findParameters() {
     allParameters.push(...findPathParameters(body));
     allParameters.push(...findQueryStringKeys(body));
 
-    // Assuming we are checking for application/javascript header (not available directly in JS, but for example)
-    const contentType = document.contentType || ""; // Replace this with actual logic to check header
-
+    // Check content type and decide if HTML attributes should be included
+    const contentType = document.contentType || "";  // Replace with actual logic to check headers
     if (contentType !== "application/javascript") {
         allParameters.push(...findHtmlAttributes(body, 'name'));
         allParameters.push(...findHtmlAttributes(body, 'id'));
@@ -136,18 +170,20 @@ async function findParameters() {
     // Remove duplicates and filter out empty values
     const uniqueParameters = [...new Set(allParameters.filter(param => param))];
 
-    // Save all parameters into a global array to use it in the future
-    uniqueParameters.forEach((param) => params.push(param));
+    // Save the unique parameters globally for future use
+    uniqueParameters.forEach(param => params.push(param));
 
-    // Get the hostname of the current tab directly from the location
+    // Save parameters to storage, keyed by hostname
     const key = `${window.location.hostname}_all`;
-
-    // Save the data to chrome.storage with the hostname as the key
     await browserAPI.storage.local.set({ [key]: params });
-    console.log(`Data saved for ${key}`);
+    console.log(`Parameters saved for ${key}`);
 }
 
-// Function to generate a random string of specified length
+/**
+ * Generate a random alphanumeric string of the given length.
+ * @param {number} length - The length of the random string to generate.
+ * @returns {string} - A random string of the specified length.
+ */
 function generateRandomString(length) {
     const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = '';
@@ -157,69 +193,70 @@ function generateRandomString(length) {
     return result;
 }
 
-// Function to send requests with parameters
+/**
+ * Function to send requests with generated random parameters.
+ * @param {Array} parameters - The list of parameters to include in the request.
+ * @param {string} baseUrl - The base URL to append parameters to.
+ */
 async function sendRequests(parameters, baseUrl) {
     const chunkSize = 30;
     const reflections = [];
 
-    // Split parameters into chunks
+    // Split parameters into chunks and send requests
     for (let i = 0; i < parameters.length; i += chunkSize) {
         const chunk = parameters.slice(i, i + chunkSize);
 
-        // Create a dictionary to store the random values that are generated for each parameter
+        // Create random values for each parameter
         const paramValues = chunk.map(param => {
-            const randomValue = generateRandomString(5);  // Generate the random value for each parameter
-            return { param, randomValue };  // Return both the parameter and its random value
+            const randomValue = generateRandomString(5);
+            return { param, randomValue };
         });
 
-        // Construct the query string using the generated random values
+        // Construct the query string with random values
         const queryString = paramValues.map(({ param, randomValue }) => `${encodeURIComponent(param)}=${encodeURIComponent(randomValue)}`).join('&');
         const url = `${baseUrl}?${queryString}`;
+
         try {
             const response = await fetch(url);
             const text = await response.text();
 
-            // Check for reflections using the same random values that were sent in the request
+            // Check for parameter reflection in the response
             paramValues.forEach(({ param, randomValue }) => {
                 if (text.includes(randomValue)) {
-                    //console.log(`Parameter ${param} with value ${randomValue} is reflected in the response.`);
                     reflections.push(param);
                 }
             });
-
         } catch (error) {
             console.error(`Error fetching URL: ${url}`, error);
         }
     }
-    console.log(reflections);
+
+    // Save reflections to storage
     const key = `${window.location.hostname}_refs`;
     browserAPI.storage.local.set({ [key]: reflections });
-    console.log('Saved Reflections');
-    // Connect to the popup
-    const port = chrome.runtime.connect({ name: "content-to-popup" });
+    console.log('Reflections saved');
 
-    // Send a message to the popup
+    // Notify the popup about the status
+    const port = chrome.runtime.connect({ name: "content-to-popup" });
     port.postMessage({ state: "checked" });
 }
 
+// Listen for messages from the popup
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'sendMessageToContent') {
-        if (message.message === "check") {
-            setTimeout(sendRequests(params, window.location.href), 0);
-        }
+    if (message.type === 'sendMessageToContent' && message.message === "check") {
+        setTimeout(() => sendRequests(params, window.location.href), 0);
     }
 });
 
-// Execute the findParameters function when the page is fully loaded
-window.addEventListener('load', findParameters);
+// Execute the extractParameters function when the page is fully loaded
+window.addEventListener('load', extractParameters);
 
-// Clear the local storage whenever the webpage gets closed
+// Clear storage when the page is unloaded
 window.addEventListener('beforeunload', async function () {
-
     const refsKey = `${window.location.hostname}_refs`;
     const allKey = `${window.location.hostname}_all`;
-    const scrollKey = `${window.location.hostname}_scrollPosition`;
-    // Remove Parameters
+
+    // Remove stored parameters and reflections
     await browserAPI.storage.local.remove(refsKey);
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');

@@ -1,25 +1,28 @@
-// Get Browser
+// popup.js
+
+// Get Browser API (Chrome or Firefox)
 const browserAPI = typeof browser !== "undefined" ? browser : chrome;
 
+/**
+ * Displays the parameters or reflections in the popup.
+ * @param {string} state - The state ('all' for all parameters, 'refs' for reflections).
+ */
 async function displayParams(state) {
     try {
-        // Get the current tab's hostname
+        // Get the current active tab's URL
         const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-        const url = new URL(tabs[0].url); // Get the current tab's URL
+        const url = new URL(tabs[0].url); // Extract the current tab's URL
         const key = `${url.hostname}_${state}`;
 
-        // Retrieve the parameters from local storage
+        // Retrieve stored parameters from local storage
         setTimeout(async () => {
             const result = await browserAPI.storage.local.get(key);
-            const params = result[key]; // Assuming params is an array or object
-            console.log(params);
+            const params = result[key]; // Extract the parameters from the result
 
             const list = document.getElementById('matches-list');
+            list.innerHTML = ''; // Clear any existing list items
 
-            // Clear any existing list items if needed
-            list.innerHTML = '';
-
-            // Check if params exist using length for array or object
+            // Display parameters or reflections based on the retrieved data
             if (Array.isArray(params) && params.length > 0) {
                 // If params is an array and has elements
                 params.forEach(param => {
@@ -37,52 +40,59 @@ async function displayParams(state) {
                     }
                 }
             } else {
-                // If no params exist, display the "No Parameter Found" message
+                // If no parameters are found, show a message
                 const listItem = document.createElement('li');
                 listItem.textContent = 'No Parameter Found In This Page';
                 listItem.classList.add('empty');
                 list.appendChild(listItem);
             }
 
+            // Save and restore scroll position
             scrollSave();
             restoreScrollPosition();
-    }, 0);
+        }, 0);
     } catch (error) {
-        console.error('Error retrieving params:', error);
+        console.error('Error retrieving parameters:', error);
     }
 }
 
-async function doesRefsExists() {
+/**
+ * Checks if reflections exist for the current page.
+ * @returns {Promise<boolean>} - Returns true if reflections exist, otherwise false.
+ */
+async function doesRefsExist() {
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-
     const url = new URL(tabs[0].url); // Get the current tab's URL
-
     const key = `${url.hostname}_refs`;
 
     const result = await browserAPI.storage.local.get(key);
-
     const params = result[key];
-    console.log(params);
 
-    // Return true if params exists, otherwise false
-    return params ? true : false;
+    return params ? true : false; // Return true if reflections exist
 }
 
+/**
+ * Restores the scroll position of the matches list when the popup is opened.
+ */
 async function restoreScrollPosition() {
-  const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-  const url = new URL(tabs[0].url); // Get the current tab's URL
-  const key = `${url.hostname}`;
-  const scrollKey = `${key}_scrollPosition`;
+    const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+    const url = new URL(tabs[0].url); // Get the current tab's URL
+    const key = `${url.hostname}`;
+    const scrollKey = `${key}_scrollPosition`;
 
-  const list = document.getElementById('matches-list');
+    const list = document.getElementById('matches-list');
 
-  setTimeout(() => {
-    const savedScrollPosition = localStorage.getItem(scrollKey);
-
-    if (savedScrollPosition) list.scrollTop = savedScrollPosition;
-  }, 0);
+    setTimeout(() => {
+        const savedScrollPosition = localStorage.getItem(scrollKey);
+        if (savedScrollPosition) {
+            list.scrollTop = savedScrollPosition; // Restore the scroll position
+        }
+    }, 0);
 }
 
+/**
+ * Saves the scroll position of the matches list whenever the user scrolls.
+ */
 async function scrollSave() {
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
     const url = new URL(tabs[0].url); // Get the current tab's URL
@@ -93,26 +103,25 @@ async function scrollSave() {
 
     list.addEventListener("scroll", () => {
         const scrollPosition = list.scrollTop;
-        localStorage.setItem(scrollKey, scrollPosition);
-  });
+        localStorage.setItem(scrollKey, scrollPosition); // Save the scroll position
+    });
 }
 
+// Handle the button click to toggle between viewing reflections or parameters
 document.getElementById('check-button').addEventListener('click', async function () {
     const button = document.getElementById('check-button');
     const title = document.getElementById('list-title');
 
     if (button.innerHTML === 'Check Reflections') {
+        const exists = await doesRefsExist(); // Check if reflections exist
 
-        const exists = await doesRefsExists()
-        console.log(exists);
         if (exists) {
             button.innerHTML = 'All Parameters';
             title.innerHTML = 'Reflections';
-            await displayParams('refs');
+            await displayParams('refs'); // Display reflections
         } else {
-            // Query the active tab
+            // If no reflections exist, request content script to check
             const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-            // Send a message to the content script on the active tab
             await browserAPI.tabs.sendMessage(tabs[0].id, { type: 'sendMessageToContent', message: 'check' });
 
             button.innerHTML = 'Checking';
@@ -121,15 +130,16 @@ document.getElementById('check-button').addEventListener('click', async function
     } else {
         button.innerHTML = 'Check Reflections';
         title.innerHTML = 'Parameters';
-        await displayParams('all');
+        await displayParams('all'); // Display all parameters
     }
 });
 
-// Listen for the connection from the content script
+// Listen for a connection from the content script
 chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "content-to-popup") {
         port.onMessage.addListener((message) => {
             if (message.state === 'checked') {
+                // Once the content script finishes checking, display reflections
                 const button = document.getElementById('check-button');
                 const title = document.getElementById('list-title');
                 displayParams('refs');
@@ -140,4 +150,5 @@ chrome.runtime.onConnect.addListener((port) => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', displayParams('all'));
+// On DOM content load, display all parameters
+document.addEventListener('DOMContentLoaded', () => displayParams('all'));
