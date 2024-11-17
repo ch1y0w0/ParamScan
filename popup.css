@@ -6,15 +6,13 @@ body {
   text-shadow: 0 0 15px #411;
   letter-spacing: 1px;
   line-height: 1.2;
-  border-radius: 12px;
   overflow: hidden;
 }
 
 html {
-  height: 550px;
+  height: 560px;
   width: 400px;
   border: 1px solid #07d100;
-  border-radius: 8px;
 }
 
 #title {
@@ -41,6 +39,7 @@ html {
   list-style: none;
   padding: 0;
   margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   height: 460px;
   overflow-y: auto;
   border: 1px solid #07d100;
