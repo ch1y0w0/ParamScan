@@ -175,7 +175,6 @@ async function sendRequests(parameters, baseUrl) {
         // Construct the query string using the generated random values
         const queryString = paramValues.map(({ param, randomValue }) => `${encodeURIComponent(param)}=${encodeURIComponent(randomValue)}`).join('&');
         const url = `${baseUrl}?${queryString}`;
-        console.log(url);
         try {
             const response = await fetch(url);
             const text = await response.text();
@@ -206,7 +205,7 @@ async function sendRequests(parameters, baseUrl) {
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sendMessageToContent') {
         if (message.message === "check") {
-            sendRequests(params, window.location.href);
+            setTimeout(sendRequests(params, window.location.href), 0);
         }
     }
 });
