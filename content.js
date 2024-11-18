@@ -160,10 +160,9 @@ async function correctUrls(arr) {
   return arr;
 }
 
-async function findJSFiles() {
-  const body = document.body.innerHTML;
+async function findJSFiles(body) {
 
-  const regex = /<script\s+[^>]*\s+src=["']([^"']+\.js)["'][^>]*><\/script>/gi;
+  const regex = /<script[^>]*\s+src=["']([^"']+\.js)["'][^>]*>/gi;
 
   let match;
 
@@ -173,7 +172,7 @@ async function findJSFiles() {
   while ((match = regex.exec(body)) !== null) {
     sources.push(match[1]);  // match[1] contains the .js file source
   }
-
+  
   try {
     // Wait for corrected URLs (if correctUrls is asynchronous)
     const correctedSources = await correctUrls(sources);
@@ -201,8 +200,6 @@ async function findJSFiles() {
     console.error('Error processing corrected URLs:', error);
   }
 }
-
-
 
 
 // Global array for storing parameters
@@ -314,7 +311,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 
-const body = document.body.innerHTML;
+const body = document.documentElement.innerHTML;
 
 // Execute the extractParameters function when the page is fully loaded
 window.addEventListener('load', extractParameters(body));
@@ -330,4 +327,4 @@ window.addEventListener('beforeunload', async function () {
     console.log('Storage cleared');
 });
 
-findJSFiles();
+findJSFiles(body);
