@@ -56,7 +56,7 @@ Feedbacks are also welcome. You can contact me via X!
 ## ToDo List
 
  - [ ] Find Dynamically Generated(JS) Reflections
- - [ ] Analye JS Files and Find Parameters in JS codes
+ - [X] ~~Analye JS Files and Find Parameters in JS codes~~
  - [ ] Passive Logging + JS Logging
  - [X] ~~Add Scroll Save~~
  - [ ] Post Request
