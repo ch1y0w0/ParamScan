@@ -139,6 +139,72 @@ function findHtmlAttributes(body, attribute) {
     return attributes;
 }
 
+
+async function correctUrls(arr) {
+  // Check if arr is an array and exists
+  if (Array.isArray(arr)) {
+    return arr.map(item => {
+      if (item.startsWith('https://') || item.startsWith('http://')) {
+        // If the URL starts with "https://" or "http://", leave it as is
+        return item;
+      } else if (item.startsWith('/')) {
+        // If the URL starts with "/", remove the "/" and add window.location.origin to the start
+        return window.location.origin + item;
+      } else {
+        // If the URL doesn't start with "/" or "https://", add window.location.origin to the start
+        return window.location.origin + '/' + item;
+      }
+    });
+  }
+  // Return undefined or the original value if arr is not provided or not an array
+  return arr;
+}
+
+async function findJSFiles() {
+  const body = document.body.innerHTML;
+
+  const regex = /<script\s+[^>]*\s+src=["']([^"']+\.js)["'][^>]*><\/script>/gi;
+
+  let match;
+
+  const sources = [];
+
+  // Extract all .js file sources from the HTML
+  while ((match = regex.exec(body)) !== null) {
+    sources.push(match[1]);  // match[1] contains the .js file source
+  }
+
+  try {
+    // Wait for corrected URLs (if correctUrls is asynchronous)
+    const correctedSources = await correctUrls(sources);
+
+    // Check if correctedSources is a valid array and not empty
+    if (Array.isArray(correctedSources) && correctedSources.length > 0) {
+      // Iterate over each URL and fetch its content
+      for (const url of correctedSources) {
+        try {
+          const response = await fetch(url);
+          if (response.ok) {
+            const body = await response.text();
+            extractParameters(body);  // Pass the body to your function
+          } else {
+            console.error(`Failed to fetch ${url}: ${response.status}`);
+          }
+        } catch (error) {
+          console.error(`Error fetching ${url}: ${error}`);
+        }
+      }
+    } else {
+      console.log('No valid URLs to process');
+    }
+  } catch (error) {
+    console.error('Error processing corrected URLs:', error);
+  }
+}
+
+
+
+
 // Global array for storing parameters
 let params = [];
 
@@ -146,9 +212,8 @@ let params = [];
  * Main function to extract parameters from the page (URL and body).
  * @returns {Promise} - A promise that resolves after parameters are saved to storage.
  */
-async function extractParameters() {
+async function extractParameters(body) {
     const url = window.location.href;
-    const body = document.body.innerHTML;
     const allParameters = [];
 
     // Extract various types of parameters
@@ -248,8 +313,11 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
+
+const body = document.body.innerHTML;
+
 // Execute the extractParameters function when the page is fully loaded
-window.addEventListener('load', extractParameters);
+window.addEventListener('load', extractParameters(body));
 
 // Clear storage when the page is unloaded
 window.addEventListener('beforeunload', async function () {
@@ -261,3 +329,5 @@ window.addEventListener('beforeunload', async function () {
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');
 });
+
+findJSFiles();

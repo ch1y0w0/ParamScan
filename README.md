@@ -57,9 +57,9 @@ Feedbacks are also welcome. You can contact me via X!
 
  - [ ] Find Dynamically Generated(JS) Reflections
  - [ ] Analye JS Files and Find Parameters in JS codes
- - [ ] Add Passive Logging
+ - [ ] Passive Logging + JS Logging
  - [X] ~~Add Scroll Save~~
  - [ ] Post Request
- - [ ] Handle Errors
+ - [ ] Better Error Handling
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
