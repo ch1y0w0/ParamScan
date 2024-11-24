@@ -310,9 +310,13 @@ async function sendRequests(parameters, baseUrl) {
             // Check for parameter reflection in the POST response
             paramValues.forEach(({ param, randomValue }) => {
                 if (textPost.includes(randomValue)) {
-                    reflections.push(param);
+                    // Check if the parameter is already in the reflections array
+                    if (!reflections.includes(param)) {
+                        reflections.push(param);  // Add the parameter if it's not already in the array
+                    }
                 }
             });
+
         } catch (error) {
             console.error(`Error sending POST request to: ${url}`, error);
         }
