@@ -274,22 +274,47 @@ async function sendRequests(parameters, baseUrl) {
             return { param, randomValue };
         });
 
-        // Construct the query string with random values
+        // Construct the query string with random values for the GET request
         const queryString = paramValues.map(({ param, randomValue }) => `${encodeURIComponent(param)}=${encodeURIComponent(randomValue)}`).join('&');
         const url = `${baseUrl}?${queryString}`;
 
+        // GET request
         try {
-            const response = await fetch(url);
-            const text = await response.text();
+            const responseGet = await fetch(url);
+            const textGet = await responseGet.text();
 
-            // Check for parameter reflection in the response
+            // Check for parameter reflection in the GET response
             paramValues.forEach(({ param, randomValue }) => {
-                if (text.includes(randomValue)) {
+                if (textGet.includes(randomValue)) {
                     reflections.push(param);
                 }
             });
         } catch (error) {
-            console.error(`Error fetching URL: ${url}`, error);
+            console.error(`Error fetching GET URL: ${url}`, error);
+        }
+
+        // POST request
+        const formData = new URLSearchParams();
+        paramValues.forEach(({ param, randomValue }) => {
+            formData.append(param, randomValue);
+        });
+
+        try {
+            const responsePost = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            console.log(responsePost);
+            const textPost = await responsePost.text();
+
+            // Check for parameter reflection in the POST response
+            paramValues.forEach(({ param, randomValue }) => {
+                if (textPost.includes(randomValue)) {
+                    reflections.push(param);
+                }
+            });
+        } catch (error) {
+            console.error(`Error sending POST request to: ${url}`, error);
         }
     }
 
@@ -302,6 +327,7 @@ async function sendRequests(parameters, baseUrl) {
     const port = chrome.runtime.connect({ name: "content-to-popup" });
     port.postMessage({ state: "checked" });
 }
+
 
 // Listen for messages from the popup
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
