@@ -59,7 +59,7 @@ Feedbacks are also welcome. You can contact me via X!
  - [X] ~~Analye JS Files and Find Parameters in JS codes~~
  - [ ] Passive Logging + JS Logging
  - [X] ~~Add Scroll Save~~
- - [ ] Post Request
+ - [X] ~~Post Request~~
  - [ ] Better Error Handling
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
