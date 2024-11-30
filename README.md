@@ -61,5 +61,7 @@ Feedbacks are also welcome. You can contact me via X!
  - [X] ~~Add Scroll Save~~
  - [X] ~~Post Request~~
  - [ ] Better Error Handling
+ - [ ] Settings Menu
+ - [ ] Regex Matching/Filtering
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
