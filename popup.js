@@ -50,6 +50,16 @@ async function displayParams(state) {
             // Save and restore scroll position
             scrollSave();
             restoreScrollPosition();
+
+            // Restore Reflection Checkbox State
+            chrome.storage.local.get(`ref_checkbox_${url.hostname}`, function (result) {
+            const refCheckBoxIsChecked = result[`ref_checkbox_${url.hostname}`];
+            if (refCheckBoxIsChecked !== null){
+                const refCheckBox = document.getElementById('ref-checkbox');
+                console.log(typeof refCheckBoxIsChecked);
+                refCheckBox.checked = refCheckBoxIsChecked;
+            }
+            });
         }, 0);
     } catch (error) {
         console.error('Error retrieving parameters:', error);
@@ -149,6 +159,58 @@ chrome.runtime.onConnect.addListener((port) => {
         });
     }
 });
+
+// Show Settings Menu
+document.addEventListener('click', function(event) {
+    // Check if the clicked element is the gearIcon or inside it
+    const gearIcon = document.getElementById('gearIcon');
+    if (event.target.closest('#gearIcon')) {
+        const settingsContainer = document.getElementById('settingsContainer');
+        const listContainer = document.getElementById('listContainer');
+
+        if (listContainer.style.display === 'block') {
+            listContainer.style.display = 'none';
+            settingsContainer.style.display = 'block';
+        } else {
+            listContainer.style.display = 'block';
+            settingsContainer.style.display = 'none';
+        }
+    }
+});
+
+
+// Back to Parameters List
+const backButton = document.getElementById('back-button');
+backButton.addEventListener('click', function(){
+    const settingsContainer = document.getElementById('settingsContainer');
+    const listContainer = document.getElementById('listContainer');
+
+    if (listContainer.style.display === 'block') {
+        listContainer.style.display = 'none';
+        settingsContainer.style.display = 'block';
+    } else {
+        listContainer.style.display = 'block';
+        settingsContainer.style.display = 'none';
+    }
+});
+
+
+// Passive Reflection Checking
+const refCheckBox = document.getElementById('ref-checkbox');
+
+refCheckBox.addEventListener('change', async function () {
+    const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+
+    const url = new URL(tabs[0].url);
+    
+    // Save the checkbox state in chrome.storage.local
+    chrome.storage.local.set({ [`ref_checkbox_${url.hostname}`]: refCheckBox.checked }, function () {
+        console.log('Checkbox state saved');
+    });
+});
+
+
+
 
 // On DOM content load, display all parameters
 document.addEventListener('DOMContentLoaded', () => displayParams('all'));

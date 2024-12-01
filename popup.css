@@ -149,3 +149,111 @@ footer {
     padding: 12px 0; /* adjust padding for better mobile look */
   }
 }
+
+#top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#title {
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+}
+
+svg {
+  margin-left: auto;
+  color: lime;
+}
+
+svg:hover {
+  cursor: pointer;
+  fill: green;
+}
+
+#settingsBox {
+  padding: 0;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  height: 460px;
+  overflow-y: auto;
+  border: 1px solid #07d100;
+  border-radius: 8px;
+  background-color: #1f1f1f;
+  box-sizing: border-box;
+}
+
+#back-button {
+  background-color: #1a1a1a; /* dark background */
+  color: #00e600; /* green text */
+  border: 2px solid #00e600; /* green border */
+  border-radius: 10px; /* rounded corners */
+  padding: 6px 12px; /* add some padding */
+  font-size: 14px; /* text size */
+  font-weight: bold; /* bold text */
+  text-align: center;
+  cursor: pointer; /* pointer on hover */
+  transition: all 0.3s ease; /* smooth transition for hover */
+  outline: none; /* remove outline */
+  min-width: 150px; /* fixed minimum width */
+  max-width: 200px; /* optional max width */
+  white-space: nowrap; /* prevent text from wrapping */
+  overflow: hidden; /* prevent overflow */
+  text-overflow: ellipsis; /* add ellipsis if text overflows */
+}
+
+#back-button:hover {
+  background-color: #00e600; /* green background on hover */
+  color: #1a1a1a; /* black text on hover */
+  border-color: #1a1a1a; /* black border on hover */
+}
+
+#back-button:active {
+  transform: scale(0.98); /* slight scale down on click */
+}
+
+/* Container for the checkbox and label */
+.passive-container {
+  display: flex;
+  align-items: center;
+  margin: 1rem 1rem; /* Further decrease margin for less space */
+}
+
+/* Hide the default checkbox appearance */
+.passive-container input[type="checkbox"] {
+  display: none;
+}
+
+/* Style for the custom checkbox */
+.passive-container .custom-checkbox {
+  width: 12px; /* Size of the custom checkbox */
+  height: 12px;
+  border: 2px solid lime; /* Border for the checkbox */
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  margin-right: 8px; /* Space between checkbox and label */
+  bottom: 1px; /* Adjust this value to vertically align the checkbox with the label */
+}
+
+/* When the checkbox is checked, fill the square but leave a little border */
+.passive-container input[type="checkbox"]:checked + label .custom-checkbox::after {
+  content: '';
+  position: absolute;
+  top: 0px; /* Adjusted for better alignment */
+  left: 0px;
+  width: 12px; /* Size of the filled square */
+  height: 12px;
+  background-color: green; /* Color of the filled square */
+  border-radius: 2px; /* Optional: rounded edges for the filled square */
+}
+
+/* Style for the label */
+.passive-container label {
+  font-size: 0.9rem; /* Adjust font size if necessary */
+  color: lime;
+  display: flex;
+  align-items: center; /* Aligns label text vertically */
+}

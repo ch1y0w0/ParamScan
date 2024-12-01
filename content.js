@@ -210,6 +210,7 @@ let params = [];
  * @returns {Promise} - A promise that resolves after parameters are saved to storage.
  */
 async function extractParameters(body) {
+
     const url = window.location.href;
     const allParameters = [];
 
@@ -277,6 +278,7 @@ async function sendRequests(parameters, baseUrl) {
         // Construct the query string with random values for the GET request
         const queryString = paramValues.map(({ param, randomValue }) => `${encodeURIComponent(param)}=${encodeURIComponent(randomValue)}`).join('&');
         const url = `${baseUrl}?${queryString}`;
+        console.log(url);
 
         // GET request
         try {
@@ -304,7 +306,6 @@ async function sendRequests(parameters, baseUrl) {
                 method: 'POST',
                 body: formData
             });
-            console.log(responsePost);
             const textPost = await responsePost.text();
 
             // Check for parameter reflection in the POST response
@@ -340,7 +341,6 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-
 const body = document.documentElement.innerHTML;
 
 // Execute the extractParameters function when the page is fully loaded
@@ -356,5 +356,17 @@ window.addEventListener('beforeunload', async function () {
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');
 });
+
+window.addEventListener('load', async function(){
+    // Retrieve the checkbox state from chrome.storage.local
+    await chrome.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
+    const refCheckBoxIsChecked = result[`ref_checkbox_${window.location.hostname}`];
+
+    if (refCheckBoxIsChecked === true){
+        setTimeout(() => sendRequests(params, window.location.href), 0);
+        }
+    });
+});
+
 
 findJSFiles(body);
