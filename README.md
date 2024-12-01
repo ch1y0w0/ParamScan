@@ -58,10 +58,11 @@ Feedbacks are also welcome. You can contact me via X!
  - [ ] Find Dynamically Generated(JS) Reflections
  - [X] ~~Analye JS Files and Find Parameters in JS codes~~
  - [ ] Passive Logging + JS Logging
+ - [ ] Passive Reflection Test
  - [X] ~~Add Scroll Save~~
  - [X] ~~Post Request~~
  - [ ] Better Error Handling
- - [ ] Settings Menu
+ - [X] ~~Settings Menu~~
  - [ ] Regex Matching/Filtering
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
