@@ -236,13 +236,13 @@ async function extractParameters(body) {
     // Save the unique parameters globally for future use
     uniqueParameters.forEach(param => params.push(param));
 
-    browserAPI.storage.local.get(`regex_checkbox_${window.location.hostname}`, (result) => {
+    browserAPI.storage.local.get(`regex_checkbox_${window.location.hostname}`, async function(result){
         const regexCheckBoxState = result[`regex_checkbox_${window.location.hostname}`];
 
         if(regexCheckBoxState !== null){
             if(regexCheckBoxState === true){
                     // Get regex pattern
-                    browserAPI.storage.local.get(`regex_pattern_${window.location.hostname}`, (result) => {
+                    await browserAPI.storage.local.get(`regex_pattern_${window.location.hostname}`, (result) => {
                         const regexPattern = result[`regex_pattern_${window.location.hostname}`];
 
                         if(regexPattern !== null){
@@ -270,7 +270,15 @@ async function extractParameters(body) {
             browserAPI.storage.local.set({ [key]: params });
             console.log(`Parameters saved for ${key}`);
         }
-    });
+    // Retrieve the checkbox state from chrome.storage.local
+    await chrome.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
+    const refCheckBoxIsChecked = result[`ref_checkbox_${window.location.hostname}`];
+
+    if (refCheckBoxIsChecked === true){
+        setTimeout(async () => await sendRequests(params, window.location.href), 0);
+    }
+});
+});
 }
 
 /**
@@ -386,17 +394,6 @@ window.addEventListener('beforeunload', async function () {
     await browserAPI.storage.local.remove(refsKey);
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');
-});
-
-window.addEventListener('load', async function(){
-    // Retrieve the checkbox state from chrome.storage.local
-    await chrome.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
-    const refCheckBoxIsChecked = result[`ref_checkbox_${window.location.hostname}`];
-
-    if (refCheckBoxIsChecked === true){
-        setTimeout(() => sendRequests(params, window.location.href), 0);
-        }
-    });
 });
 
 
