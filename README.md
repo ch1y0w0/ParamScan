@@ -64,5 +64,6 @@ Feedbacks are also welcome. You can contact me via X!
  - [X] ~~Better Error Handling/Code Improvements~~
  - [X] ~~Settings Menu~~
  - [X] ~~Regex Matching/Filtering~~
+ - [ ] Add Firefox Support
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
