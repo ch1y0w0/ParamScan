@@ -185,6 +185,13 @@ svg:hover {
   box-sizing: border-box;
 }
 
+#settingsBox p {
+  color: lime;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px 10px 5px 10px;
+}
+
 #back-button {
   background-color: #1a1a1a; /* dark background */
   color: #00e600; /* green text */
@@ -256,4 +263,27 @@ svg:hover {
   color: lime;
   display: flex;
   align-items: center; /* Aligns label text vertically */
+}
+
+#regex-box {
+  background-color: #1a1a1a; /* dark background */
+  color: #00e600; /* green text */
+  border: 2px solid #00e600; /* green border */
+  border-radius: 10px; /* rounded corners */
+  padding: 6px 12px; /* padding inside the input */
+  font-size: 14px; /* text size */
+  font-weight: bold; /* bold text */
+  text-align: center;
+  cursor: text; /* pointer when clicking to type */
+  transition: all 0.3s ease; /* smooth transition on focus */
+  outline: none; /* remove outline */
+  min-width: 150px; /* fixed minimum width */
+  max-width: 200px; /* optional max width */
+  white-space: nowrap; /* prevent text from wrapping */
+  overflow: hidden; /* prevent overflow */
+  text-overflow: ellipsis; /* add ellipsis if text overflows */
+}
+
+#regex-box::placeholder {
+  color: green;
 }

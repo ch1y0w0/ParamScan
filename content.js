@@ -236,10 +236,41 @@ async function extractParameters(body) {
     // Save the unique parameters globally for future use
     uniqueParameters.forEach(param => params.push(param));
 
-    // Save parameters to storage, keyed by hostname
-    const key = `${window.location.hostname}_all`;
-    await browserAPI.storage.local.set({ [key]: params });
-    console.log(`Parameters saved for ${key}`);
+    browserAPI.storage.local.get(`regex_checkbox_${window.location.hostname}`, (result) => {
+        const regexCheckBoxState = result[`regex_checkbox_${window.location.hostname}`];
+
+        if(regexCheckBoxState !== null){
+            if(regexCheckBoxState === true){
+                    // Get regex pattern
+                    browserAPI.storage.local.get(`regex_pattern_${window.location.hostname}`, (result) => {
+                        const regexPattern = result[`regex_pattern_${window.location.hostname}`];
+
+                        if(regexPattern !== null){
+                            params = params.filter(param => param.match(regexPattern));
+                            // Save matched parameters to storage, keyed by hostname
+                            const key = `${window.location.hostname}_all`;
+                            browserAPI.storage.local.set({ [key]: params });
+                            console.log(`Parameters saved for ${key}`);
+                        } else {
+                            // Save parameters to storage, keyed by hostname
+                            const key = `${window.location.hostname}_all`;
+                            browserAPI.storage.local.set({ [key]: params });
+                            console.log(`Parameters saved for ${key}`);
+                        }
+                    });
+            } else {
+                // Save parameters to storage, keyed by hostname
+                const key = `${window.location.hostname}_all`;
+                browserAPI.storage.local.set({ [key]: params });
+                console.log(`Parameters saved for ${key}`);
+            }
+        } else {
+            // Save parameters to storage, keyed by hostname
+            const key = `${window.location.hostname}_all`;
+            browserAPI.storage.local.set({ [key]: params });
+            console.log(`Parameters saved for ${key}`);
+        }
+    });
 }
 
 /**
