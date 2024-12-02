@@ -61,7 +61,7 @@ Feedbacks are also welcome. You can contact me via X!
  - [X] ~~Passive Reflection Test~~
  - [X] ~~Add Scroll Save~~
  - [X] ~~Post Request~~
- - [ ] Better Error Handling/Code Improvements
+ - [X] ~~Better Error Handling/Code Improvements~~
  - [X] ~~Settings Menu~~
  - [X] ~~Regex Matching/Filtering~~
  
