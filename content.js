@@ -271,7 +271,7 @@ async function extractParameters(body) {
             console.log(`Parameters saved for ${key}`);
         }
     // Retrieve the checkbox state from chrome.storage.local
-    await chrome.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
+    await browserAPI.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
     const refCheckBoxIsChecked = result[`ref_checkbox_${window.location.hostname}`];
 
     if (refCheckBoxIsChecked === true){
@@ -368,7 +368,7 @@ async function sendRequests(parameters, baseUrl) {
     console.log('Reflections saved');
 
     // Notify the popup about the status
-    const port = chrome.runtime.connect({ name: "content-to-popup" });
+    const port = browserAPI.runtime.connect({ name: "content-to-popup" });
     port.postMessage({ state: "checked" });
 }
 

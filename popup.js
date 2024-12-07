@@ -52,7 +52,7 @@ async function displayParams(state) {
             restoreScrollPosition();
 
             // Restore Reflection Checkbox State
-            chrome.storage.local.get(`ref_checkbox_${url.hostname}`, function (result) {
+            browserAPI.storage.local.get(`ref_checkbox_${url.hostname}`, function (result) {
             const refCheckBoxIsChecked = result[`ref_checkbox_${url.hostname}`];
             if (refCheckBoxIsChecked !== null){
                 const refCheckBox = document.getElementById('ref-checkbox');
@@ -61,7 +61,7 @@ async function displayParams(state) {
             });
 
             // Restore Regex Checkbox State
-            chrome.storage.local.get(`regex_checkbox_${url.hostname}`, async function (result) {
+            browserAPI.storage.local.get(`regex_checkbox_${url.hostname}`, async function (result) {
             const regexCheckBoxIsChecked = result[`regex_checkbox_${url.hostname}`];
             if (regexCheckBoxIsChecked !== null){
                 const regexCheckBox = document.getElementById('regex-checkbox');
@@ -69,7 +69,7 @@ async function displayParams(state) {
                 const regexPatternBox = document.getElementById('regex-box');
 
                 if(regexCheckBoxIsChecked === true){
-                    await chrome.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
+                    await browserAPI.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
                         const regexPattern = result[`regex_pattern_${url.hostname}`];
                         if(regexPattern !== null){
                             regexPatternBox.value = regexPattern;
@@ -168,7 +168,7 @@ document.getElementById('check-button').addEventListener('click', async function
 });
 
 // Listen for a connection from the content script
-chrome.runtime.onConnect.addListener((port) => {
+browserAPI.runtime.onConnect.addListener((port) => {
     if (port.name === "content-to-popup") {
         port.onMessage.addListener((message) => {
             if (message.state === 'checked') {
@@ -226,7 +226,7 @@ refCheckBox.addEventListener('change', async function () {
     const url = new URL(tabs[0].url);
     
     // Save the checkbox state in chrome.storage.local
-    await chrome.storage.local.set({ [`ref_checkbox_${url.hostname}`]: refCheckBox.checked }, function () {
+    await browserAPI.storage.local.set({ [`ref_checkbox_${url.hostname}`]: refCheckBox.checked }, function () {
     });
 });
 
@@ -239,7 +239,7 @@ regexCheckBox.addEventListener('change', async function() {
 
     if(regexCheckBox.checked === true){
         regexPatternBox.style.display = 'block';
-        await chrome.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
+        await browserAPI.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
             const regexPattern = result[`regex_pattern_${url.hostname}`];
             if(regexPattern !== null){
                 regexPatternBox.value = regexPattern; 
@@ -252,7 +252,7 @@ regexCheckBox.addEventListener('change', async function() {
     }
     
     // Save the checkbox state in chrome.storage.local
-    await chrome.storage.local.set({ [`regex_checkbox_${url.hostname}`]: regexCheckBox.checked });
+    await browserAPI.storage.local.set({ [`regex_checkbox_${url.hostname}`]: regexCheckBox.checked });
 });
 
 const regexPatternBox = document.getElementById('regex-box');
@@ -260,7 +260,7 @@ regexPatternBox.addEventListener('input', async function(){
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
     const url = new URL(tabs[0].url);
 
-    await chrome.storage.local.set({ [`regex_pattern_${url.hostname}`]: regexPatternBox.value });
+    await browserAPI.storage.local.set({ [`regex_pattern_${url.hostname}`]: regexPatternBox.value });
 });
 
 // On DOM content load, display all parameters
