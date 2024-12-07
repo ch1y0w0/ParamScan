@@ -25,27 +25,29 @@
   <!-- Beginning of Settings Section -->
   <div id="settingsContainer" class="list-container" style="display: none;">
     <div class="parent-container">
-    <button id="back-button">Back</button>
-  </div>
-  <!-- Settings items -->
-  <div id="settingsBox">
-    <p>*Every change requires refreshing*</p>
-    <div class="passive-container">
-      <input type="checkbox" id="ref-checkbox"/>
-      <label for="ref-checkbox" title="WARNING: This may cause harm to the target and will cause a huge traffic *Disabled by default for each target, NOT recommended for slow connections*">
-        <div class="custom-checkbox"></div>
-        Passive Reflection Test
-      </label>
-  </div>
-    <div class="passive-container">
-      <input type="checkbox" id="regex-checkbox"/>
-      <label for="regex-checkbox" title="Match found parameters with regex pattern">
-      <div class="custom-checkbox"></div>
-        Regex Matching
-      </label>
-      <input type="text" id="regex-box" placeholder="Enter Your Regex Pattern" style="display: none" />
+      <button id="back-button">Back</button>
     </div>
-  <!-- End of Settings Section -->
-  <script src="popup.js"></script>
+    <!-- Settings items -->
+    <div id="settingsBox">
+      <p>*Every change requires refreshing*</p>
+      <div class="passive-container">
+        <input type="checkbox" id="ref-checkbox"/>
+        <label for="ref-checkbox" title="WARNING: This may cause harm to the target and will cause a huge traffic *Disabled by default for each target, NOT recommended for slow connections*">
+          <div class="custom-checkbox"></div>
+          Passive Reflection Test
+        </label>
+      </div>
+      <div class="passive-container">
+        <input type="checkbox" id="regex-checkbox"/>
+        <label for="regex-checkbox" title="Match found parameters with regex pattern">
+        <div class="custom-checkbox"></div>
+          Regex Matching
+        </label>
+        <input type="text" id="regex-box" placeholder="Enter Your Regex Pattern" style="display: none" />
+        </div>
+    <!-- End of Settings Section -->
+    <script src="popup.js"></script>
+    </div>
+  </div>
 </body>
 </html>
