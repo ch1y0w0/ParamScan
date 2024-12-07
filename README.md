@@ -18,7 +18,8 @@ https://github.com/user-attachments/assets/1a85f6d0-1346-48e2-a890-077f179e2841
 4.  Hit **Load unpacked** and select the `ParamScan` folder where the extension is stored.
     
 5.  You should now see the extension icon in your Chrome toolbar.
-    
+
+*Note: This extension has been tested on Chrome and Edge. While it was mainly designed for Chrome, it's also working perfectly on Edge. Firefox support is still in progress*
 
 ## Usage
 
