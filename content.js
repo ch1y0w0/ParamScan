@@ -236,6 +236,7 @@ async function extractParameters(body) {
     // Save the unique parameters globally for future use
     uniqueParameters.forEach(param => params.push(param));
 
+    // Restore checkbox state
     browserAPI.storage.local.get(`regex_checkbox_${window.location.hostname}`, async function(result){
         const regexCheckBoxState = result[`regex_checkbox_${window.location.hostname}`];
 
@@ -274,6 +275,7 @@ async function extractParameters(body) {
     await browserAPI.storage.local.get(`ref_checkbox_${window.location.hostname}`, function (result) {
     const refCheckBoxIsChecked = result[`ref_checkbox_${window.location.hostname}`];
 
+    // Auto reflection test if the checkbox is checked
     if (refCheckBoxIsChecked === true){
         setTimeout(async () => await sendRequests(params, window.location.href), 0);
     }

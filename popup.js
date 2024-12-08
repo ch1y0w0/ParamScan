@@ -68,12 +68,16 @@ async function displayParams(state) {
                 regexCheckBox.checked = regexCheckBoxIsChecked;
                 const regexPatternBox = document.getElementById('regex-box');
 
+                // Only get the pattern if the checkbox is checked
                 if(regexCheckBoxIsChecked === true){
+
+                    // Get the regex pattern
                     await browserAPI.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
                         const regexPattern = result[`regex_pattern_${url.hostname}`];
                         if(regexPattern !== null){
                             regexPatternBox.value = regexPattern;
                     } else {
+                        // If empty, to avoid 'undefined'
                         regexPatternBox.value = '';
                     }
                     });
@@ -191,6 +195,7 @@ document.addEventListener('click', function(event) {
         const settingsContainer = document.getElementById('settingsContainer');
         const listContainer = document.getElementById('listContainer');
 
+        // Show/Hide settings menu
         if (listContainer.style.display === 'block') {
             listContainer.style.display = 'none';
             settingsContainer.style.display = 'block';
@@ -208,6 +213,7 @@ backButton.addEventListener('click', function(){
     const settingsContainer = document.getElementById('settingsContainer');
     const listContainer = document.getElementById('listContainer');
 
+    // Show/Hide settings menu
     if (listContainer.style.display === 'block') {
         listContainer.style.display = 'none';
         settingsContainer.style.display = 'block';
@@ -222,7 +228,6 @@ backButton.addEventListener('click', function(){
 const refCheckBox = document.getElementById('ref-checkbox');
 refCheckBox.addEventListener('change', async function () {
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-
     const url = new URL(tabs[0].url);
     
     // Save the checkbox state in chrome.storage.local
@@ -231,12 +236,14 @@ refCheckBox.addEventListener('change', async function () {
 });
 
 
+// Regex Match checkbox toggle action
 const regexCheckBox = document.getElementById('regex-checkbox');
 regexCheckBox.addEventListener('change', async function() {
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
     const regexPatternBox = document.getElementById('regex-box');
     const url = new URL(tabs[0].url);
 
+    // Show/Hide regex pattern box
     if(regexCheckBox.checked === true){
         regexPatternBox.style.display = 'block';
         await browserAPI.storage.local.get(`regex_pattern_${url.hostname}`, (result) => {
@@ -255,6 +262,7 @@ regexCheckBox.addEventListener('change', async function() {
     await browserAPI.storage.local.set({ [`regex_checkbox_${url.hostname}`]: regexCheckBox.checked });
 });
 
+// Save the pattern to the storage
 const regexPatternBox = document.getElementById('regex-box');
 regexPatternBox.addEventListener('input', async function(){
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
