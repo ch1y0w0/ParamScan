@@ -11,8 +11,9 @@ body {
 
 html {
   height: 560px;
-  width: 400px;
+  width: 340px;
   border: 1px solid #07d100;
+  border-radius: 5px;
 }
 
 #title {
@@ -83,6 +84,7 @@ footer {
 
 .list-container {
   margin-bottom: 1rem;
+  width: 325px;
 }
 
 .parent-container {
