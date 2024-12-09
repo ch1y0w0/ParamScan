@@ -18,7 +18,6 @@ async function displayParams(state) {
         setTimeout(async () => {
             const result = await browserAPI.storage.local.get(key);
             const params = result[key]; // Extract the parameters from the result
-            console.log(params);
 
             const list = document.getElementById('matches-list');
             list.innerHTML = ''; // Clear any existing list items
