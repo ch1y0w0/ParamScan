@@ -87,6 +87,32 @@ async function displayParams(state) {
                 }
             }
             });
+
+            // Restore passive logging checkbox state
+            browserAPI.storage.local.get(`log_checkbox_${url.hostname}`, async function(result){
+                const logCheckBoxIsChecked = result[`log_checkbox_${url.hostname}`];
+                const passiveLogCheckbox = document.getElementById('log-checkbox');
+
+                if(logCheckBoxIsChecked !== null){
+                    passiveLogCheckbox.checked = logCheckBoxIsChecked;
+
+                    const downloadButton = document.getElementById('log-button');
+
+                    // Show download button if checked
+                    if(logCheckBoxIsChecked === true){
+                        downloadButton.style.display = 'block';
+                    } else{
+                        downloadButton.style.display = 'none';
+                    }
+                }
+            });
+
+            // Download file when the download button is clicked
+            const downloadButton = document.getElementById('log-button');
+            downloadButton.addEventListener('click', async function(){
+                saveParamsToFile(params);
+            });
+
         }, 0);
     } catch (error) {
         console.error('Error retrieving parameters:', error);
@@ -142,6 +168,26 @@ async function scrollSave() {
         const scrollPosition = list.scrollTop;
         localStorage.setItem(scrollKey, scrollPosition); // Save the scroll position
     });
+}
+
+// Save all params into a json file
+async function saveParamsToFile(params){
+    const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+    const url = new URL(tabs[0].url);
+
+    const data = {}
+    data[`${url}`] = params;
+
+    const jsonData = JSON.stringify(data, null, 2); // Pretty-printed JSON
+
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    // Create an anchor element to trigger the download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob); // Create an object URL for the Blob
+    link.download = 'items.json'; // Set the filename for the download
+    // Trigger the download by simulating a click
+    link.click();
 }
 
 // Handle the button click to toggle between viewing reflections or parameters
@@ -269,6 +315,25 @@ regexPatternBox.addEventListener('input', async function(){
     const url = new URL(tabs[0].url);
 
     await browserAPI.storage.local.set({ [`regex_pattern_${url.hostname}`]: regexPatternBox.value });
+});
+
+// Passive Logging State
+const passiveLogCheckbox = document.getElementById('log-checkbox');
+passiveLogCheckbox.addEventListener('change', async function(){
+    const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+    const url = new URL(tabs[0].url);
+
+    // Show Download Button
+    const downloadButton = document.getElementById('log-button');
+
+    if(passiveLogCheckbox.checked === true){
+        downloadButton.style.display = 'block'
+    } else{
+        downloadButton.style.display = 'none';
+    }
+
+    // Save checkbox state in storage
+    await browserAPI.storage.local.set({[`log_checkbox_${url.hostname}`]: passiveLogCheckbox.checked});
 });
 
 // On DOM content load, display all parameters

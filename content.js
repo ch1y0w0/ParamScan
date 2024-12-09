@@ -374,7 +374,6 @@ async function sendRequests(parameters, baseUrl) {
     port.postMessage({ state: "checked" });
 }
 
-
 // Listen for messages from the popup
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sendMessageToContent' && message.message === "check") {

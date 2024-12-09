@@ -116,7 +116,7 @@ footer {
   margin: 0; /* Optional: to remove default margin */
 }
 
-#check-button {
+.buttons {
   background-color: #1a1a1a; /* dark background */
   color: #00e600; /* green text */
   border: 2px solid #00e600; /* green border */
@@ -135,18 +135,18 @@ footer {
   text-overflow: ellipsis; /* add ellipsis if text overflows */
 }
 
-#check-button:hover {
+.buttons:hover {
   background-color: #00e600; /* green background on hover */
   color: #1a1a1a; /* black text on hover */
   border-color: #1a1a1a; /* black border on hover */
 }
 
-#check-button:active {
+.buttons:active {
   transform: scale(0.98); /* slight scale down on click */
 }
 
 @media (max-width: 30px) {
-  #check-button {
+  .buttons {
     width: 100%; /* make the button full width on smaller screens */
     padding: 12px 0; /* adjust padding for better mobile look */
   }
@@ -192,35 +192,6 @@ svg:hover {
   font-size: 14px;
   font-weight: bold;
   margin: 10px 10px 5px 10px;
-}
-
-#back-button {
-  background-color: #1a1a1a; /* dark background */
-  color: #00e600; /* green text */
-  border: 2px solid #00e600; /* green border */
-  border-radius: 10px; /* rounded corners */
-  padding: 6px 12px; /* add some padding */
-  font-size: 14px; /* text size */
-  font-weight: bold; /* bold text */
-  text-align: center;
-  cursor: pointer; /* pointer on hover */
-  transition: all 0.3s ease; /* smooth transition for hover */
-  outline: none; /* remove outline */
-  min-width: 150px; /* fixed minimum width */
-  max-width: 200px; /* optional max width */
-  white-space: nowrap; /* prevent text from wrapping */
-  overflow: hidden; /* prevent overflow */
-  text-overflow: ellipsis; /* add ellipsis if text overflows */
-}
-
-#back-button:hover {
-  background-color: #00e600; /* green background on hover */
-  color: #1a1a1a; /* black text on hover */
-  border-color: #1a1a1a; /* black border on hover */
-}
-
-#back-button:active {
-  transform: scale(0.98); /* slight scale down on click */
 }
 
 /* Container for the checkbox and label */
