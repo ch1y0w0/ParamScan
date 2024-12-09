@@ -1,13 +1,14 @@
 
 # ParamScan
 
-**ParamScan** is a simple Chrome extension for web security enthusiasts and pen testers. It helps you find URL parameters in a webpage's source code and check if any of them are reflected on the page. This is super useful for spotting potential XSS vulnerabilities and other security issues.
+**ParamScan** is a simple browser extension for web security enthusiasts and pen testers. It helps you find URL parameters in a webpage's source code and check if any of them are reflected on the page. This is super useful for spotting potential XSS vulnerabilities and other security issues.
 
 https://github.com/user-attachments/assets/3119f355-0640-4be3-aafa-7d477db0a628
 
 
 ## Installation
 
+#### Chrome
 1.  Download the latest release or clone this repo to your local machine:  
     `git clone https://github.com/ch1y0w0/ParamScan.git`
     
@@ -19,7 +20,20 @@ https://github.com/user-attachments/assets/3119f355-0640-4be3-aafa-7d477db0a628
     
 5.  You should now see the extension icon in your Chrome toolbar.
 
-*Note: This extension has been tested on Chrome and Edge. While it was mainly designed for Chrome, it's also working perfectly on Edge. Firefox support is still in progress*
+#### Firefox
+1.  Download the latest release or clone this repo to your local machine:  
+    `git clone https://github.com/ch1y0w0/ParamScan.git`
+    
+2.  Go to Firefox's Debugging page (`about:debugging`).
+    
+3.  Navigate to `This Firefox`
+    
+4.  Hit **Load Temporary Add-on** and select the `ParamScan` folder where the extension is stored.
+    
+5.  You should now see the extension icon in your Firefox toolbar.
+
+
+*Note: This extension has been tested on Chrome, Edge and Firefox. While it is mainly developed for Chrome, it is working out of the box on other browsers as well. If you noticed any bug, feel free to open an issue.*
 
 ## Usage
 
@@ -65,6 +79,6 @@ Feedbacks are also welcome. You can contact me via X!
  - [X] ~~Better Error Handling/Code Improvements~~
  - [X] ~~Settings Menu~~
  - [X] ~~Regex Matching/Filtering~~
- - [ ] Add Firefox Support
+ - [X] ~~Add Firefox Support~~
  
  *Note: Huge thanks to [fallparams](https://github.com/ImAyrix/fallparams) for the idea*
