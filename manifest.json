@@ -8,6 +8,11 @@
     "storage",
     "tabs"
   ],
+  "browser_specific_settings": {
+  "gecko": {
+    "id": "ParamScan@ch1y0w0"
+    }
+  },
   "action": {
     "default_popup": "popup.html"
   },
