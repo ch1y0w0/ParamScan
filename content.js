@@ -233,8 +233,12 @@ async function extractParameters(body) {
     // Remove duplicates and filter out empty values
     const uniqueParameters = [...new Set(allParameters.filter(param => param))];
 
-    // Save the unique parameters globally for future use
-    uniqueParameters.forEach(param => params.push(param));
+    // Add only unique parameters to the global params array
+    uniqueParameters.forEach(param => {
+        if (!params.includes(param)) {  // Check if the param is not already in the array
+            params.push(param);
+        }
+    });
 
     // Restore checkbox state
     browserAPI.storage.local.get(`regex_checkbox_${window.location.hostname}`, async function(result){
@@ -282,6 +286,7 @@ async function extractParameters(body) {
 });
 });
 }
+
 
 /**
  * Generate a random alphanumeric string of the given length.
