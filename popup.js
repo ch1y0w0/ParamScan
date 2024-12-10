@@ -218,9 +218,9 @@ document.getElementById('check-button').addEventListener('click', async function
 });
 
 // Listen for a connection from the content script
-browserAPI.runtime.onConnect.addListener((port) => {
+browserAPI.runtime.onConnect.addListener(async (port) => {
     if (port.name === "content-to-popup") {
-        port.onMessage.addListener((message) => {
+        port.onMessage.addListener(async (message) => {
             if (message.state === 'checked') {
                 // Once the content script finishes checking, display reflections
                 const button = document.getElementById('check-button');
@@ -228,6 +228,16 @@ browserAPI.runtime.onConnect.addListener((port) => {
                 displayParams('refs');
                 button.innerHTML = 'All Parameters';
                 title.innerHTML = 'Reflections';
+            }
+
+            if (message.state === 'logged'){
+                const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+                const url = new URL(tabs[0].url);
+                await browserAPI.storage.local.get(`logged_params_${url.hostname}`, await function(result){
+                    const loggedParams = result[`logged_params_${url.hostname}`];
+
+                    console.log(result);
+                });
             }
         });
     }
@@ -328,6 +338,10 @@ passiveLogCheckbox.addEventListener('change', async function(){
 
     if(passiveLogCheckbox.checked === true){
         downloadButton.style.display = 'block'
+
+        // Send a message to content script to start logging
+        const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
+        await browserAPI.tabs.sendMessage(tabs[0].id, { type: 'sendMessageToContent', message: 'log' });
     } else{
         downloadButton.style.display = 'none';
     }

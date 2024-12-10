@@ -379,6 +379,21 @@ async function sendRequests(parameters, baseUrl) {
     port.postMessage({ state: "checked" });
 }
 
+// Passively logs parameters into an array
+async function passiveLog() {
+
+    const loggedParams = {};
+
+    // Save logged parameters into storage
+    loggedParams[`${window.location}`] = params;
+    browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: loggedParams});
+
+    // Notify the popup about the status
+    const port = browserAPI.runtime.connect({ name: "content-to-popup" });
+    port.postMessage({ state: "logged" });
+}
+
+
 // Listen for messages from the popup
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sendMessageToContent' && message.message === "check") {
@@ -402,5 +417,11 @@ window.addEventListener('beforeunload', async function () {
     console.log('Storage cleared');
 });
 
+// Wait for a message from popup.js to start logging
+browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'sendMessageToContent' && message.message === "log") {
+        setTimeout(() => passiveLog(), 0);
+    }
+});
 
 findJSFiles(body);
