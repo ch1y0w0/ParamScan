@@ -8,7 +8,7 @@ https://github.com/user-attachments/assets/3119f355-0640-4be3-aafa-7d477db0a628
 
 ## Installation
 
-#### Chrome
+### Chrome
 1.  Download the latest release or clone this repo to your local machine:  
     `git clone https://github.com/ch1y0w0/ParamScan.git`
     
@@ -20,7 +20,7 @@ https://github.com/user-attachments/assets/3119f355-0640-4be3-aafa-7d477db0a628
     
 5.  You should now see the extension icon in your Chrome toolbar.
 
-#### Firefox
+### Firefox
 You can get ParamScan from [Mozilla add-on store](https://addons.mozilla.org/en-US/firefox/addon/paramscan/).
 
 **Temporary Installation:**
