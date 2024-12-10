@@ -283,8 +283,23 @@ async function extractParameters(body) {
     if (refCheckBoxIsChecked === true){
         setTimeout(async () => await sendRequests(params, window.location.href), 0);
     }
+
+    
 });
 });
+
+    // Check if passive log checkbox is checked
+    await browserAPI.storage.local.get(`log_checkbox_${window.location.hostname}`, async function(result){
+        const logCheckBoxIsChecked = result[`log_checkbox_${window.location.hostname}`];
+
+        if(logCheckBoxIsChecked !== null){
+            if(logCheckBoxIsChecked === true){
+
+                // Log params
+                passiveLog();
+            }
+        }
+    });
 }
 
 
@@ -381,29 +396,29 @@ async function sendRequests(parameters, baseUrl) {
 
 // Passively logs parameters into an array
 async function passiveLog() {
-
     // Get current logged parameters
-    await browserAPI.storage.local.get(`logged_params_${window.location.hostname}`, async function(result){
-        
-        const currentLogs = result[`logged_params_${window.location.hostname}`];
-
-        if(currentLogs !== null){
-
-            // Save parameters for this page
-            currentLogs[`${window.location}`] = params;
-            await browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: currentLogs});
+    await browserAPI.storage.local.get(`logged_params_${window.location.hostname}`, async function(result) {
+        // Ensure result is an object and handle undefined/null safely
+        let currentLogs = result[`logged_params_${window.location.hostname}`];
+        console.log(currentLogs);
+        if (currentLogs === undefined || currentLogs === null) {
+            currentLogs = {}; // Initialize to an empty object if null or undefined
         }
-        // Save parameters for this host if it's null 
-        else{
-            currentLogs[`${window.location}`] = params;
+
+        // Check if currentLogs is an empty object
+        if (Object.keys(currentLogs).length !== 0) {
+            // Save parameters for this page
+            currentLogs[`${window.location}`] = params; // Ensure 'params' is defined
             await browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: currentLogs});
+        } else {
+            const loggedParams = {};
+            loggedParams[`${window.location}`] = params; // Ensure 'params' is defined
+            console.log(loggedParams);
+            await browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: loggedParams});
         }
     });
-
-    // Notify the popup about the status
-    const port = browserAPI.runtime.connect({ name: "content-to-popup" });
-    port.postMessage({ state: "logged" });
 }
+
 
 
 // Listen for messages from the popup
@@ -412,11 +427,6 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // Checking
     if (message.type === 'sendMessageToContent' && message.message === "check") {
         setTimeout(() => sendRequests(params, window.location.href), 0);
-    }
-
-    // Logging
-    if (message.type === 'sendMessageToContent' && message.message === "log") {
-        setTimeout(() => passiveLog(), 0);
     }
 });
 

@@ -110,7 +110,7 @@ async function displayParams(state) {
             // Download file when the download button is clicked
             const downloadButton = document.getElementById('log-button');
             downloadButton.addEventListener('click', async function(){
-                saveParamsToFile(params);
+                saveParamsToFile();
             });
 
         }, 0);
@@ -171,23 +171,23 @@ async function scrollSave() {
 }
 
 // Save all params into a json file
-async function saveParamsToFile(params){
+async function saveParamsToFile(){
     const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
     const url = new URL(tabs[0].url);
 
-    const data = {}
-    data[`${url}`] = params;
+    await browserAPI.storage.local.get(`logged_params_${url.hostname}`, function(result){
+        let loggedParams = result[`logged_params_${url.hostname}`];
+        const jsonData = JSON.stringify(loggedParams, null, 2); // Pretty-printed JSON
 
-    const jsonData = JSON.stringify(data, null, 2); // Pretty-printed JSON
+        const blob = new Blob([jsonData], { type: 'application/json' });
 
-    const blob = new Blob([jsonData], { type: 'application/json' });
-
-    // Create an anchor element to trigger the download
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob); // Create an object URL for the Blob
-    link.download = 'items.json'; // Set the filename for the download
-    // Trigger the download by simulating a click
-    link.click();
+        // Create an anchor element to trigger the download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob); // Create an object URL for the Blob
+        link.download = 'items.json'; // Set the filename for the download
+        // Trigger the download by simulating a click
+        link.click();
+    });
 }
 
 // Handle the button click to toggle between viewing reflections or parameters
@@ -228,17 +228,6 @@ browserAPI.runtime.onConnect.addListener(async (port) => {
                 displayParams('refs');
                 button.innerHTML = 'All Parameters';
                 title.innerHTML = 'Reflections';
-            }
-
-            if (message.state === 'logged'){
-                console.log('t');
-                const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-                const url = new URL(tabs[0].url);
-                await browserAPI.storage.local.get(`logged_params_${url.hostname}`, await function(result){
-                    const loggedParams = result[`logged_params_${url.hostname}`];
-
-                    console.log(result);
-                });
             }
         });
     }
@@ -339,11 +328,9 @@ passiveLogCheckbox.addEventListener('change', async function(){
 
     if(passiveLogCheckbox.checked === true){
         downloadButton.style.display = 'block'
-
-        // Send a message to content script to start logging
-        const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-        await browserAPI.tabs.sendMessage(tabs[0].id, { type: 'sendMessageToContent', message: 'log' });
     } else{
+
+        await browserAPI.storage.local.remove([`logged_params_${url.hostname}`]);
         downloadButton.style.display = 'none';
     }
 
