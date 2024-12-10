@@ -16,7 +16,7 @@
   <div id="listContainer" class="list-container" style="display: block;">
     <div class="parent-container">
       <h1 id='list-title' class="list-title">Parameters</h1>
-      <button id="check-button">Check Reflections</button>
+      <button class="buttons" id="check-button">Check Reflections</button>
     </div>
       <ul id="matches-list" class="list">
       </ul>
@@ -25,7 +25,7 @@
   <!-- Beginning of Settings Section -->
   <div id="settingsContainer" class="list-container" style="display: none;">
     <div class="parent-container">
-      <button id="back-button">Back</button>
+      <button class="buttons" id="back-button">Back</button>
     </div>
     <!-- Settings items -->
     <div id="settingsBox">
@@ -44,7 +44,15 @@
           Regex Matching
         </label>
         <input type="text" id="regex-box" placeholder="Enter Your Regex Pattern" style="display: none" />
-        </div>
+      </div>
+      <div class="passive-container">
+        <input type="checkbox" id="log-checkbox"/>
+        <label for="log-checkbox" title="Passively save all parameters and reflections into a file">
+        <div class="custom-checkbox"></div>
+          Passive Logging
+        </label>
+        <button class="buttons" id="log-button" style="display: none">Download</button>
+      </div>
     <!-- End of Settings Section -->
     <script src="popup.js"></script>
     </div>
