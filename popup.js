@@ -231,6 +231,7 @@ browserAPI.runtime.onConnect.addListener(async (port) => {
             }
 
             if (message.state === 'logged'){
+                console.log('t');
                 const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
                 const url = new URL(tabs[0].url);
                 await browserAPI.storage.local.get(`logged_params_${url.hostname}`, await function(result){

@@ -382,11 +382,23 @@ async function sendRequests(parameters, baseUrl) {
 // Passively logs parameters into an array
 async function passiveLog() {
 
-    const loggedParams = {};
+    // Get current logged parameters
+    await browserAPI.storage.local.get(`logged_params_${window.location.hostname}`, async function(result){
+        
+        const currentLogs = result[`logged_params_${window.location.hostname}`];
 
-    // Save logged parameters into storage
-    loggedParams[`${window.location}`] = params;
-    browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: loggedParams});
+        if(currentLogs !== null){
+
+            // Save parameters for this page
+            currentLogs[`${window.location}`] = params;
+            await browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: currentLogs});
+        }
+        // Save parameters for this host if it's null 
+        else{
+            currentLogs[`${window.location}`] = params;
+            await browserAPI.storage.local.set({[`logged_params_${window.location.hostname}`]: currentLogs});
+        }
+    });
 
     // Notify the popup about the status
     const port = browserAPI.runtime.connect({ name: "content-to-popup" });
@@ -396,8 +408,15 @@ async function passiveLog() {
 
 // Listen for messages from the popup
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+    // Checking
     if (message.type === 'sendMessageToContent' && message.message === "check") {
         setTimeout(() => sendRequests(params, window.location.href), 0);
+    }
+
+    // Logging
+    if (message.type === 'sendMessageToContent' && message.message === "log") {
+        setTimeout(() => passiveLog(), 0);
     }
 });
 
@@ -415,13 +434,6 @@ window.addEventListener('beforeunload', async function () {
     await browserAPI.storage.local.remove(refsKey);
     await browserAPI.storage.local.remove(allKey);
     console.log('Storage cleared');
-});
-
-// Wait for a message from popup.js to start logging
-browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'sendMessageToContent' && message.message === "log") {
-        setTimeout(() => passiveLog(), 0);
-    }
 });
 
 findJSFiles(body);
