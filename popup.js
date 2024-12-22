@@ -184,7 +184,7 @@ async function saveParamsToFile(){
         // Create an anchor element to trigger the download
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob); // Create an object URL for the Blob
-        link.download = 'items.json'; // Set the filename for the download
+        link.download = `${url.hostname}.json`; // Set the filename for the download
         // Trigger the download by simulating a click
         link.click();
     });
