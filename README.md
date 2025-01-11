@@ -21,7 +21,6 @@ https://github.com/user-attachments/assets/3119f355-0640-4be3-aafa-7d477db0a628
 5.  You should now see the extension icon in your Chrome toolbar.
 
 ### Firefox
-You can get ParamScan from [Mozilla add-on store](https://addons.mozilla.org/en-US/firefox/addon/paramscan/).
 
 **Temporary Installation:**
 1.  Download the latest release or clone this repo to your local machine:  
@@ -34,6 +33,13 @@ You can get ParamScan from [Mozilla add-on store](https://addons.mozilla.org/en-
 4.  Hit **Load Temporary Add-on** and select the `ParamScan` folder where the extension is stored.
     
 5.  You should now see the extension icon in your Firefox toolbar.
+
+**Permanent Installation:**
+1. Go to [ParamScan Mozilla add-on store page](https://addons.mozilla.org/en-US/firefox/addon/paramscan/)
+
+2. Click on `Add to Firefox`
+
+3. You should now see the extension icon in your Firefox toolbar.
 
 
 *Note: This extension has been tested on Chrome, Edge and Firefox. While it is mainly developed for Chrome, it is working out of the box on other browsers as well. If you noticed any bug, feel free to open an issue.*
